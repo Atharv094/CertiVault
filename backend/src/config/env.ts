@@ -43,7 +43,7 @@ const envSchema = z.object({
   GOOGLE_CALLBACK_URL: z.string().optional(),
   MAX_UPLOAD_BYTES: z.string().transform(Number).pipe(z.number().positive()).default(10485760),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).pipe(z.number().positive()).default(900000),
+  RATE_LIMIT_WINDOW_MS: z.string().transform(Number).pipe(z.number().positive()).default(60000),
   RATE_LIMIT_MAX: z.string().transform(Number).pipe(z.number().positive()).default(100),
   BCRYPT_ROUNDS: z.string().transform(Number).pipe(z.number().min(10).max(15)).default(12),
   SESSION_COOKIE_NAME: z.string().default("refreshToken"),
