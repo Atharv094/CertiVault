@@ -22,6 +22,8 @@ import {
   getNotificationsController,
 } from "./document.controller.js";
 
+import { uploadLimiter } from "../../middleware/rateLimiter.js";
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
@@ -42,7 +44,7 @@ documentRouter.get("/filter", filterDocumentsController);
 documentRouter.get("/recent", getRecentDocumentsController);
 documentRouter.get("/favorites", getFavoriteDocumentsController);
 documentRouter.get("/", listDocuments);
-documentRouter.post("/", upload.single("file"), uploadDocument);
+documentRouter.post("/", uploadLimiter, upload.single("file"), uploadDocument);
 documentRouter.get("/:id", getDocument);
 documentRouter.patch("/:id", patchDocument);
 documentRouter.delete("/:id", deleteDocument);

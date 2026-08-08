@@ -11,7 +11,7 @@ import cookieParser from "cookie-parser";
 // express-mongo-sanitize is incompatible with Express 5.0
 // We handle NoSQL injection through input validation instead
 import hpp from "hpp";
-import rateLimit from "express-rate-limit";
+import { globalLimiter } from "./middleware/rateLimiter.js";
 import path from "path";
 import { getEnv, isDevelopment, isProduction } from "./config/env.js";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -149,36 +149,8 @@ export const createApp = (): Express => {
   // ============================================
   // RATE LIMITING
   // ============================================
-  // General API rate limiter
-  const generalLimiter = rateLimit({
-    windowMs: env.RATE_LIMIT_WINDOW_MS,
-    max: env.RATE_LIMIT_MAX,
-    message: {
-      error: {
-        code: "RATE_LIMIT_EXCEEDED",
-        message: "Too many requests, please try again later.",
-      },
-    },
-    standardHeaders: true,
-    legacyHeaders: false,
-  });
-
-  app.use("/api", generalLimiter);
-
-  // Stricter rate limit for auth endpoints
-  const authLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // 10 attempts per window
-    message: {
-      error: {
-        code: "AUTH_RATE_LIMIT_EXCEEDED",
-        message: "Too many authentication attempts, please try again later.",
-      },
-    },
-    skipSuccessfulRequests: false,
-  });
-
-  app.use("/api/auth", authLimiter);
+  // Global API rate limiter
+  app.use("/api", globalLimiter);
 
   // ============================================
   // STATIC FILES (for production and local file serving)

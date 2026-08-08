@@ -24,7 +24,12 @@ import { generateTokenPair, hashRefreshToken, calculateTokenExpiration } from ".
 import { RefreshSession } from "./refreshSession.model.js";
 import { getEnv } from "../../config/env.js";
 
+import { authLimiter } from "../../middleware/rateLimiter.js";
+
 const router = Router();
+
+// Apply strict rate limiting to all auth endpoints
+router.use(authLimiter);
 
 // Validation schemas
 const registerSchema = z.object({

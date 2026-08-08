@@ -1,24 +1,31 @@
 process.env.NODE_ENV = "test";
+process.env.RATE_LIMIT_MAX = "15";
+process.env.RATE_LIMIT_WINDOW_MS = "60000";
+
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
-import { createApp } from "../../src/app.js";
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { connectDB, disconnectDB } from "../../src/config/db.js";
 import http from "http";
 
 let baseUrl: string;
 let server: http.Server;
 let mongoServer: MongoMemoryServer;
+let disconnectDB: () => Promise<void>;
 
 before(async () => {
   // Start in-memory MongoDB
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
 
+  // Dynamically import db config to prevent env validation before process.env is set
+  const { connectDB, disconnectDB: dDB } = await import("../../src/config/db.js");
+  disconnectDB = dDB;
+
   // Connect Mongoose to it
   await connectDB(mongoUri);
 
   // Start Express App
+  const { createApp } = await import("../../src/app.js");
   server = createApp().listen(0);
   await new Promise<void>((resolve) => server.once("listening", resolve));
   const address = server.address();
@@ -139,4 +146,52 @@ test("returns HTTP 400 with normalized error when JSON is malformed", async () =
   assert.equal(body.error.message, "Malformed JSON payload");
   assert.equal(body.requestId, "json-error-id");
   assert.equal(body.error.stack, undefined);
+});
+
+test("global rate limiter: returns HTTP 429 after exceeding limit", async () => {
+  let exceeded = false;
+  let status429Count = 0;
+  
+  for (let i = 0; i < 25; i++) {
+    const response = await fetch(`${baseUrl}/api`, {
+      headers: { "X-Forwarded-For": "1.1.1.1" },
+    });
+    if (response.status === 429) {
+      exceeded = true;
+      status429Count++;
+      const body: any = await response.json();
+      assert.equal(body.error.code, "RATE_LIMIT_EXCEEDED");
+      assert.equal(body.error.message, "Too many requests, please try again later.");
+      assert.ok(body.requestId);
+    }
+  }
+  assert.ok(exceeded, "Rate limit should have been exceeded");
+  assert.ok(status429Count > 0, "Should have received at least one 429");
+});
+
+test("auth rate limiter: returns HTTP 429 after exceeding limit", async () => {
+  let exceeded = false;
+  let status429Count = 0;
+
+  for (let i = 0; i < 15; i++) {
+    const response = await fetch(`${baseUrl}/api/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Forwarded-For": "2.2.2.2",
+      },
+      body: JSON.stringify({ email: "invalid-email-format", password: "short" }),
+    });
+
+    if (response.status === 429) {
+      exceeded = true;
+      status429Count++;
+      const body: any = await response.json();
+      assert.equal(body.error.code, "AUTH_RATE_LIMIT_EXCEEDED");
+      assert.equal(body.error.message, "Too many authentication attempts, please try again later.");
+      assert.ok(body.requestId);
+    }
+  }
+  assert.ok(exceeded, "Auth rate limit should have been exceeded");
+  assert.ok(status429Count > 0, "Should have received at least one 429");
 });
