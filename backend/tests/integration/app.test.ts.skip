@@ -10,7 +10,7 @@ import http from "http";
 let baseUrl: string;
 let server: http.Server;
 let mongoServer: MongoMemoryServer;
-let disconnectDB: () => Promise<void>;
+let disconnectDb: () => Promise<void>;
 
 before(async () => {
   // Start in-memory MongoDB
@@ -18,11 +18,11 @@ before(async () => {
   const mongoUri = mongoServer.getUri();
 
   // Dynamically import db config to prevent env validation before process.env is set
-  const { connectDB, disconnectDB: dDB } = await import("../../src/config/db.js");
-  disconnectDB = dDB;
+  const { connectDb, disconnectDb: dDB } = await import("../../src/config/db.js");
+  disconnectDb = dDB;
 
   // Connect Mongoose to it
-  await connectDB(mongoUri);
+  await connectDb(mongoUri);
 
   // Start Express App
   const { createApp } = await import("../../src/app.js");
@@ -43,7 +43,7 @@ after(async () => {
   });
 
   // Disconnect Database
-  await disconnectDB();
+  await disconnectDb();
 
   // Stop in-memory MongoDB
   await mongoServer.stop();

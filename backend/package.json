@@ -10,7 +10,8 @@
     "start": "node src/server.js",
     "test": "node --test",
     "format:check": "prettier --check \"src/**/*.js\" \"tests/**/*.js\" \"*.json\"",
-    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"*.json\""
+    "format": "prettier --write \"src/**/*.js\" \"tests/**/*.js\" \"*.json\"",
+    "test:coverage": "c8 node --test"
   },
   "engines": {
     "node": ">=20"
@@ -23,12 +24,19 @@
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.6.2",
     "express-validator": "^7.3.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
     "multer": "^2.0.2"
   },
   "devDependencies": {
-    "prettier": "^3.9.4"
+    "c8": "^12.0.0",
+    "mongodb-memory-server": "^11.2.0",
+    "prettier": "^3.9.4",
+    "ts-node": "^10.9.2"
+  },
+  "allowScripts": {
+    "mongodb-memory-server@11.2.0": true
   }
 }
