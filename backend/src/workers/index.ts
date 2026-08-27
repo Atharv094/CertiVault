@@ -16,6 +16,7 @@ import { getEnv } from "../config/env.js";
 import { createModuleLogger } from "../common/utils/logger.js";
 import { startEmailWorker } from "./email.worker.js";
 import { startNotificationWorker } from "./notification.worker.js";
+import { startDocumentWorker } from "./document.worker.js";
 
 const log = createModuleLogger("workers");
 
