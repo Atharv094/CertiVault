@@ -1,5 +1,5 @@
 import NodeCache from "node-cache";
-import { getRedisClient } from "../config/redis.js";
+import { redis as redisClient } from "../config/redis.js";
 
 const memCache = new NodeCache();
 
@@ -10,10 +10,9 @@ class CacheService {
    * @returns {Promise<any>}
    */
   async get(key) {
-    const redis = getRedisClient();
-    if (redis) {
+    if (redisClient) {
       try {
-        const val = await redis.get(key);
+        const val = await redisClient.get(key);
         return val ? JSON.parse(val) : null;
       } catch (err) {
         console.error("Redis get error:", err);
@@ -30,10 +29,9 @@ class CacheService {
    * @param {number} ttl
    */
   async set(key, value, ttl = 300) {
-    const redis = getRedisClient();
-    if (redis) {
+    if (redisClient) {
       try {
-        await redis.set(key, JSON.stringify(value), "EX", ttl);
+        await redisClient.set(key, JSON.stringify(value), "EX", ttl);
         return;
       } catch (err) {
         console.error("Redis set error:", err);
@@ -49,10 +47,9 @@ class CacheService {
    * @param {string} key
    */
   async del(key) {
-    const redis = getRedisClient();
-    if (redis) {
+    if (redisClient) {
       try {
-        await redis.del(key);
+        await redisClient.del(key);
         return;
       } catch (err) {
         console.error("Redis del error:", err);
