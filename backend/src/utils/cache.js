@@ -34,12 +34,11 @@ class CacheService {
     if (redis) {
       try {
         await redis.set(key, JSON.stringify(value), "EX", ttl);
-        return;
       } catch (err) {
         console.error("Redis set error:", err);
         memCache.set(key, value, ttl);
-        return;
       }
+      return;
     }
     memCache.set(key, value, ttl);
   }
@@ -53,12 +52,11 @@ class CacheService {
     if (redis) {
       try {
         await redis.del(key);
-        return;
       } catch (err) {
         console.error("Redis del error:", err);
         memCache.del(key);
-        return;
       }
+      return;
     }
     memCache.del(key);
   }
