@@ -16,9 +16,9 @@ These rules apply EVERY TIME before you create an issue, open a PR, or post a co
 
 1. **Use Issue Templates:** Before creating a new issue, ALWAYS check if a `.github/ISSUE_TEMPLATE` folder exists. If templates are provided, your issue description MUST strictly follow the format of the appropriate template. Do not invent your own format.
 2. **Check for Duplicates:** Always search BOTH open and closed issues (using `gh issue list --state all`) to ensure the bug or feature hasn't already been reported or resolved. If a similar closed issue exists, reference it in your new issue.
-. **Avoid Spamming:** Do not open more than **3 assignment requests** at once in the same repository. Requesting 2-3 issues simultaneously is acceptable to increase the chance of getting assigned. Wait for those to be resolved before requesting more.
-3. **Check Issue Labels:** Pay close attention to issue labels. Do not request assignment for issues labeled with `not-now`, `wontfix`, `invalid`, or any label indicating the issue is on hold.
-4. **Check Assignment Status:** NEVER request assignment for an issue that is already assigned to someone else. Always check the `assignees` list AND previous comments before asking.
+3. **Avoid Spamming:** Do not open more than **3 assignment requests** at once in the same repository. Requesting 2-3 issues simultaneously is acceptable to increase the chance of getting assigned. Wait for those to be resolved before requesting more.
+4. **Check Issue Labels:** Pay close attention to issue labels. Do not request assignment for issues labeled with `not-now`, `wontfix`, `invalid`, or any label indicating the issue is on hold.
+5. **Check Assignment Status:** NEVER request assignment for an issue that is already assigned to someone else. Always check the `assignees` list AND previous comments before asking.
 
 ## Phase 2.5: L3 Verification Gate â€” MANDATORY Before Any Issue Creation or Assignment Request
 
