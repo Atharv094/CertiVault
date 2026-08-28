@@ -4,7 +4,7 @@ import { cache } from "../../utils/cache.js";
 const DASHBOARD_SUMMARY_CACHE_KEY = "dashboard:summary";
 const CACHE_TTL_SECONDS = 300; // 5 minutes
 
-export const getDashboardSummary = async (req, res, next) => {
+export const getDashboardSummary = async (_req, res, next) => {
   try {
     // 1. Check Cache
     const cachedSummary = await cache.get(DASHBOARD_SUMMARY_CACHE_KEY);
