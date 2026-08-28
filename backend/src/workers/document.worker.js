@@ -12,7 +12,7 @@ export const startDocumentWorker = () => {
   const worker = new Worker(
     DOCUMENT_QUEUE_NAME,
     async (job) => {
-      return await processDocumentJob(job.data);
+      return processDocumentJob(job.data);
     },
     {
       connection,
@@ -22,7 +22,7 @@ export const startDocumentWorker = () => {
   );
 
   worker.on("completed", (job) => {
-    console.log(`Document processing job ${job.id} completed for doc ${job.data?.documentId}`);
+    console.log(`Document processing job ${job?.id} completed for doc ${job?.data?.documentId}`);
   });
 
   worker.on("failed", (job, err) => {

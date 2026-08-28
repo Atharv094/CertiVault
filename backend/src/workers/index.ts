@@ -53,7 +53,8 @@ async function start(): Promise<void> {
   const workers: Worker[] = [
     startEmailWorker(),
     startNotificationWorker(),
-  ];
+    startDocumentWorker(),
+  ].filter(Boolean) as Worker[]; // filter out nulls if Redis isn't configured
 
   log.info(`Workers: ${workers.length} workers running`);
 

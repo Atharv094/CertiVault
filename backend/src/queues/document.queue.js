@@ -61,7 +61,7 @@ export const processDocumentJob = async (jobData) => {
     ? fileBuffer
     : fileBuffer?.data
       ? Buffer.from(fileBuffer.data)
-      : Buffer.from(fileBuffer);
+      : fileBuffer ? Buffer.from(fileBuffer) : Buffer.from("");
 
   try {
     await Document.findByIdAndUpdate(documentId, {
@@ -115,7 +115,7 @@ export const queueDocumentProcessing = async ({ documentId, fileBuffer, mimeType
   if (q) {
     await q.add("process-document", {
       documentId,
-      fileBuffer: Buffer.isBuffer(fileBuffer) ? fileBuffer : Buffer.from(fileBuffer),
+      fileBuffer: Buffer.isBuffer(fileBuffer) ? fileBuffer : (fileBuffer ? Buffer.from(fileBuffer) : null),
       mimeType,
       s3Key,
     });
