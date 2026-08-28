@@ -6,6 +6,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
+    "build": "node -e \"require('fs').cpSync('src', 'dist', {recursive:true})\"",
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "node --test",
@@ -44,6 +45,6 @@
     "ts-node": "^10.9.2"
   },
   "allowScripts": {
-    "mongodb-memory-server@11.2.0": true
+    "mongodb-memory-server@11.2.0": true, "msgpackr-extract@3.0.4": true
   }
 }
