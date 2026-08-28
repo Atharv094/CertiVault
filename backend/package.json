@@ -6,6 +6,7 @@
   "type": "module",
   "main": "src/server.js",
   "scripts": {
+    "build": "node -e \"require('fs').cpSync('src', 'dist', {recursive:true})\"",
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
     "test": "node --test",
